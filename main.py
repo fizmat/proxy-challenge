@@ -6,14 +6,18 @@ from nltk import NLTKWordTokenizer
 app = Flask(__name__)
 
 upstream = 'https://news.ycombinator.com'
+modify_word_length = 6
+append_character = '™'
 
 
-def modify_string(s):
+def modify_string(s, word_length=modify_word_length):
     prev_b = 0
     results = []
     for a, b in NLTKWordTokenizer().span_tokenize(s):
-        results.append(s[prev_b:a])
-        results.append(s[a:b])
+        fragment = s[prev_b:b]
+        if b-a == word_length:
+            fragment += append_character
+        results.append(fragment)
         prev_b = b
     results.append(s[prev_b:])
     return ''.join(results)
