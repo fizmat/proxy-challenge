@@ -1,3 +1,6 @@
+import re
+from urllib.parse import urlsplit, urlunsplit
+
 from flask import Flask, request
 from requests import get
 from bs4 import BeautifulSoup
@@ -5,9 +8,21 @@ from nltk import NLTKWordTokenizer
 
 app = Flask(__name__)
 
-upstream = 'https://news.ycombinator.com'
+proxy_ip = '127.0.0.1'
+proxy_port = 8232
+upstream_domain = 'news.ycombinator.com'
+upstream = 'https://' + upstream_domain
 modify_word_length = 6
 append_character = '™'
+
+
+def modify_href(href, proxy_loc=f'{proxy_ip}:{proxy_port}', upstream_loc=upstream_domain):
+    scheme, loc, path, query, fragment = urlsplit(href)
+    print([scheme, loc, path, query, fragment])
+    if loc == upstream_loc:
+        return urlunsplit(['http', proxy_loc, path, query, fragment])
+    else:
+        return href
 
 
 def modify_string(s, word_length=modify_word_length):
@@ -28,6 +43,8 @@ def modify_html(text):
     body = soup.find('body')
     for s in body.find_all(string=True):
         s.replace_with(modify_string(str(s)))
+    for a in body.find_all('a', href=re.compile(upstream_domain)):
+        a['href'] = modify_href(a['href'])
     return soup.decode(formatter='html5')
 
 
@@ -43,4 +60,4 @@ def hello(path):
 
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=8232)
+    app.run(host=proxy_ip, port=proxy_port)
