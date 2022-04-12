@@ -1,4 +1,13 @@
-from main import modify_html, modify_string
+from main import modify_html, modify_string, modify_href
+
+
+def test_modify_href():
+    assert modify_href("//example.com", "localhost", "example.com") == "http://localhost"
+    assert modify_href("https://example.com/foo/bar?a=1&b=xyz#frag", "127.0.0.1:8080", "example.com") == \
+           "http://127.0.0.1:8080/foo/bar?a=1&b=xyz#frag"
+    assert modify_href("//subdomain.example.com", "localhost", "example.com") == "//subdomain.example.com"
+    assert modify_href("https://example.com/foo/bing.com", "localhost", "bing.com") == \
+           "https://example.com/foo/bing.com"
 
 
 def test_modify_string():
