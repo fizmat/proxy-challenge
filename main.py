@@ -6,11 +6,18 @@ app = Flask(__name__)
 upstream = 'https://news.ycombinator.com'
 
 
+def modify(text):
+    return text
+
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def hello(path):
     r = get(f'{upstream}/{path}', params=request.args)
-    return r.content
+    if r.headers.get('content-type') == 'text/html':
+        return modify(r.text)
+    else:
+        return r.content
 
 
 if __name__ == '__main__':
