@@ -15,7 +15,7 @@ def modify_string(s, word_length=modify_word_length):
     results = []
     for a, b in NLTKWordTokenizer().span_tokenize(s):
         fragment = s[prev_b:b]
-        if b-a == word_length:
+        if b - a == word_length:
             fragment += append_character
         results.append(fragment)
         prev_b = b
