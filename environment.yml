@@ -1,0 +1,7 @@
+name: proxy-challenge
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - flask=2.1.1
