@@ -7,8 +7,15 @@ app = Flask(__name__)
 upstream = 'https://news.ycombinator.com'
 
 
-def modify(text):
+def modify_string(s):
+    return s
+
+
+def modify_html(text):
     soup = BeautifulSoup(text, 'lxml')
+    body = soup.find('body')
+    for s in body.find_all(string=True):
+        s.replace_with(modify_string(str(s)))
     return soup.decode(formatter='html5')
 
 
@@ -17,7 +24,7 @@ def modify(text):
 def hello(path):
     r = get(f'{upstream}/{path}', params=request.args)
     if r.headers.get('content-type') == 'text/html':
-        return modify(r.text)
+        return modify_html(r.text)
     else:
         return r.content
 
