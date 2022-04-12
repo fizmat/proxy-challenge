@@ -5,3 +5,4 @@ channels:
 dependencies:
   - python=3.9
   - flask=2.1.1
+  - requests=2.27.1
