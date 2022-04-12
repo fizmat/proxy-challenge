@@ -1,6 +1,7 @@
 from flask import Flask, request
 from requests import get
 from bs4 import BeautifulSoup
+from nltk import NLTKWordTokenizer
 
 app = Flask(__name__)
 
@@ -8,7 +9,14 @@ upstream = 'https://news.ycombinator.com'
 
 
 def modify_string(s):
-    return s
+    prev_b = 0
+    results = []
+    for a, b in NLTKWordTokenizer().span_tokenize(s):
+        results.append(s[prev_b:a])
+        results.append(s[a:b])
+        prev_b = b
+    results.append(s[prev_b:])
+    return ''.join(results)
 
 
 def modify_html(text):
