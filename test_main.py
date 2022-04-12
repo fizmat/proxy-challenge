@@ -1,9 +1,14 @@
-from main import modify
+from main import modify_html, modify_string
 
 
-def test_modify():
+def test_modify_string():
+    s = 'a bb ccc dddd eeeee ffffff ggggggg'
+    assert modify_string(s) == s
+
+
+def test_modify_html():
     s = '<html><body>Hello World</body></html>'
-    assert modify(s) == s
+    assert modify_html(s) == s
     s = """<html lang="en">
 <head><meta charset="utf-8">
 <title>title</title>
@@ -20,4 +25,4 @@ comma,
 </body>
 </html>
 """
-    assert modify(s) == s
+    assert modify_html(s) == s
