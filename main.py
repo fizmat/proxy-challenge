@@ -35,7 +35,8 @@ def modify_html(text):
 @app.route('/<path:path>')
 def hello(path):
     r = get(f'{upstream}/{path}', params=request.args)
-    if r.headers.get('content-type') == 'text/html':
+    content_type = r.headers.get('content-type')
+    if content_type.startswith('text/html;') or content_type == 'text/html':
         return modify_html(r.text)
     else:
         return r.content
