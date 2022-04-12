@@ -1,12 +1,16 @@
-from flask import Flask, request, escape
+from flask import Flask, request
+from requests import get
 
 app = Flask(__name__)
+
+upstream = 'https://news.ycombinator.com'
 
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def hello(path):
-    return escape(request.url)
+    r = get(f'{upstream}/{path}', params=request.args)
+    return r.content
 
 
 if __name__ == '__main__':
