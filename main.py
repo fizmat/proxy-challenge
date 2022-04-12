@@ -1,5 +1,6 @@
 from flask import Flask, request
 from requests import get
+from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
@@ -7,7 +8,8 @@ upstream = 'https://news.ycombinator.com'
 
 
 def modify(text):
-    return text
+    soup = BeautifulSoup(text, 'lxml')
+    return soup.decode(formatter='html5')
 
 
 @app.route('/', defaults={'path': ''})
