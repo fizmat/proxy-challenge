@@ -11,9 +11,23 @@ def test_modify_href():
 
 
 def test_modify_string():
-    s = 'a bb ccc dddd eeeee ffffff™ ggggggg'
-    assert modify_string(s) == s
+    assert modify_string('a bb ccc dddd eeeee ffffff ggggggg') == 'a bb ccc dddd eeeee ffffff™ ggggggg'
     assert modify_string('6-character, 6-letter, 6-char') == '6-character, 6-letter, 6-char™'
+
+
+def test_modify_string_missing_tm():
+    assert modify_string(' пришёл. (I came.)') == ' пришёл™. (I came.)'
+
+
+def test_modify_string_extra_tm():
+    assert modify_string("Not sure if you'd like an advice or merely sharing your experience, \
+but after reading your comment I spent an hour or so trying to provide a simple rule of thumb. To my \
+surprise, I failed miserably. But I scraped some info together in the process, so I'll post it in a hope \
+that it might give you a better™ perspective. Mind you, I'm not a linguist or a teacher.") \
+           == "Not sure if you'd like an advice™ or merely™ sharing your experience, \
+but after reading your comment I spent an hour or so trying™ to provide a simple™ rule of thumb. To my \
+surprise, I failed™ miserably. But I scraped some info together in the process, so I'll post it in a hope \
+that it might give you a better™ perspective. Mind you, I'm not a linguist or a teacher."
 
 
 def test_modify_html_no_change():
