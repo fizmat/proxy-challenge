@@ -17,11 +17,11 @@ modify_word_length = 6
 append_character = '™'
 
 
-def modify_href(href, proxy_loc=f'{proxy_ip}:{proxy_port}', upstream_loc=upstream_domain):
+def modify_href(href, upstream_loc=upstream_domain):
     scheme, loc, path, query, fragment = urlsplit(href)
     print([scheme, loc, path, query, fragment])
     if loc == upstream_loc:
-        return urlunsplit(['http', proxy_loc, path, query, fragment])
+        return urlunsplit(['', '', path, query, fragment])
     else:
         return href
 
