@@ -4,7 +4,8 @@ from urllib.parse import urlsplit, urlunsplit
 from flask import Flask, request
 from requests import get
 from bs4 import BeautifulSoup
-from nltk import NLTKWordTokenizer
+import nltk
+from nltk import NLTKWordTokenizer, PunktSentenceTokenizer
 
 app = Flask(__name__)
 
@@ -25,16 +26,22 @@ def modify_href(href, proxy_loc=f'{proxy_ip}:{proxy_port}', upstream_loc=upstrea
         return href
 
 
-def modify_string(s, word_length=modify_word_length):
-    prev_b = 0
+def modify_string(text, word_length=modify_word_length):
     results = []
-    for a, b in NLTKWordTokenizer().span_tokenize(s):
-        fragment = s[prev_b:b]
-        if b - a == word_length:
-            fragment += append_character
-        results.append(fragment)
-        prev_b = b
-    results.append(s[prev_b:])
+    prev_sentence_end = 0
+    for sentence_start, sentence_end in PunktSentenceTokenizer().span_tokenize(text):
+        results.append(text[prev_sentence_end:sentence_start])
+        sentence = text[sentence_start:sentence_end]
+        prev_end = 0
+        for start, end in NLTKWordTokenizer().span_tokenize(sentence):
+            fragment = sentence[prev_end:end]
+            if end - start == word_length:
+                fragment += append_character
+            results.append(fragment)
+            prev_end = end
+        results.append(sentence[prev_end:])
+        prev_sentence_end = sentence_end
+    results.append(text[prev_sentence_end:])
     return ''.join(results)
 
 
